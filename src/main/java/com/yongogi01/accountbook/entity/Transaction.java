@@ -44,4 +44,13 @@ public class Transaction {
     public String getCategory() { return category; }
     public String getMemo() { return memo; }
     public LocalDateTime getTransactionDate() { return transactionDate; }
+
+    // 엔티티 내부 데이터를 변경하는 비즈니스 메서드
+    public void update(TransactionType type, Long amount, String category, String memo, LocalDateTime transactionDate) {
+        this.type = type;
+        this.amount = amount;
+        this.category = category;
+        this.memo = memo;
+        this.transactionDate = transactionDate;
+    }
 }

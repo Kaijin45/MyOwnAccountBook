@@ -29,4 +29,23 @@ public class TransactionController {
     public List<Transaction> getTransactions() {
         return transactionService.getAllTransactions();
     }
+    // [GET] 특정 거래 내역 단건 조회 (예: /api/transactions/1)
+    @GetMapping("/{id}")
+    public Transaction getTransaction(@PathVariable("id") Long id) {
+        return transactionService.getTransaction(id);
+    }
+
+    // [PUT] 거래 내역 수정
+    @PutMapping("/{id}")
+    public String updateTransaction(@PathVariable("id") Long id, @RequestBody TransactionRequestDto dto) {
+        Long updatedId = transactionService.updateTransaction(id, dto);
+        return "수정 완료! 거래 내역 ID: " + updatedId;
+    }
+
+    // [DELETE] 거래 내역 삭제
+    @DeleteMapping("/{id}")
+    public String deleteTransaction(@PathVariable("id") Long id) {
+        transactionService.deleteTransaction(id);
+        return "삭제 완료! 대상 ID: " + id;
+    }
 }

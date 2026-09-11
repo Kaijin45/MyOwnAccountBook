@@ -39,4 +39,38 @@ public class TransactionService {
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
+
+    // 3. 단건 상세 조회
+    @Transactional(readOnly = true)
+    public Transaction getTransaction(Long id) {
+        return transactionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 거래 내역이 존재하지 않습니다. ID = " + id));
+    }
+
+    // 4. 거래 내역 수정 (더티 체킹 활용)
+    @Transactional
+    public Long updateTransaction(Long id, TransactionRequestDto dto) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("수정할 거래 내역이 존재하지 않습니다. ID = " + id));
+
+        // JPA의 영속성 컨텍스트(Dirty Checking): 엔티티 객체의 값만 바꾸면 트랜잭션 종료 시점에 자동으로 DB에 UPDATE 쿼리를 날려줌
+        transaction.update(
+                dto.getType(),
+                dto.getAmount(),
+                dto.getCategory(),
+                dto.getMemo(),
+                dto.getTransactionDate()
+        );
+
+        return transaction.getId();
+    }
+
+    // 5. 거래 내역 삭제
+    @Transactional
+    public void deleteTransaction(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 거래 내역이 존재하지 않습니다. ID = " + id));
+
+        transactionRepository.delete(transaction);
+    }
 }
